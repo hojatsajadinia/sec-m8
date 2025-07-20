@@ -1,6 +1,7 @@
 import os
 import subprocess
 import shlex
+import json
 
 
 class GitleaksScanner:
@@ -17,13 +18,16 @@ class GitleaksScanner:
 
         print("STDOUT:\n", result.stdout)
         print("STDERR:\n", result.stderr)
-        print("Exit code:", result.returncode)
 
-        return result.returncode == 0
+        return result.returncode
 
     def report(self):
-        # Implement the reporting logic here
-        pass
+        report_path = "gitleaks_report_sec-m8.json"
+        if not os.path.isfile(report_path):
+            raise FileNotFoundError(f"{report_path} not found in current directory.")
+
+        with open(report_path, "r") as f:
+            return json.load(f)
 
     def normalize_flag(self, name: str) -> str:
         """Convert env var to CLI flag, e.g., GITLEAKS_REPORT_PATH → --report-path"""

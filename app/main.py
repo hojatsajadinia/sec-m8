@@ -2,6 +2,7 @@ import os
 from sys import exit
 from utils.logger import Logger
 from scanners.gitleaks import GitleaksScanner
+import json
 
 logger = Logger().get_logger()
 
@@ -52,7 +53,11 @@ def main():
             logger.info("Running Gitleaks scan...")
 
             gitleaksScanne = GitleaksScanner()
-            gitleaksScanne.scan()
+            if gitleaksScanne.scan():
+                logger.info("Gitleaks scan completed successfully.")
+                report = gitleaksScanne.report()
+                logger.info("Gitleaks report generated.")
+                print(json.dumps(report, indent=2))
 
         elif scan_tool == "trufflehog":
             logger.info("Running TruffleHog scan...")
