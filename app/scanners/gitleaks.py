@@ -27,10 +27,20 @@ class GitleaksScanner:
 
     def normalize_flag(self, name: str) -> str:
         """Convert env var to CLI flag, e.g., GITLEAKS_REPORT_PATH → --report-path"""
-        return "--" + name.replace("GITLEAKS_", "").lower().replace("_", "-")
+        if len(name.replace("GITLEAKS_", "")) == 1:
+            return "-" + name.replace("GITLEAKS_", "").lower()
+        else:
+            return "--" + name.replace("GITLEAKS_", "").lower().replace("_", "-")
 
     def build_gitleaks_command(self):
-        base_command = ["gitleaks", "detect"]
+        base_command = [
+            "gitleaks",
+            "git",
+            "--report-format",
+            "json",
+            "--report-path",
+            "gitleaks_report_sec-m8.json",
+        ]
         cli_flags = []
 
         for key, value in os.environ.items():
@@ -38,7 +48,9 @@ class GitleaksScanner:
                 continue
 
             flag = self.normalize_flag(key)
-
+            if flag in ["--report-format", "--report-path"]:
+                # Skip flags that are already set in base_command
+                continue
             # Boolean flag (true/false) with no value
             if value.lower() in ("1", "true", "yes"):
                 cli_flags.append(flag)
