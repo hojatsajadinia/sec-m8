@@ -1,17 +1,10 @@
-import os
 from sys import exit
 from utils.logger import Logger
 from scanners.gitleaks import GitleaksScanner
-import json
+from utils.get_env_variable import get_env_variable
+from utils.handle_report import handle_report
 
 logger = Logger().get_logger()
-
-
-def get_env_variable(var_name, default=None):
-    value = os.getenv(var_name, default)
-    if value is None:
-        raise EnvironmentError(f"Required environment variable '{var_name}' not set.")
-    return value
 
 
 def main():
@@ -54,18 +47,8 @@ def main():
 
             gitleaksScanne = GitleaksScanner()
             if gitleaksScanne.scan():
-                logger.info("Gitleaks scan completed successfully.")
                 report = gitleaksScanne.report()
-                logger.info("Gitleaks report generated.")
-                if os.getenv("PR_COMMENT", "false").lower() in ("1", "true", "yes"):
-                    logger.info("Posting Gitleaks report to PR comment.")
-                    # Add logic to post report to PR comment
-                elif os.getenv("PRINT_REPORT", "false").lower() in ("1", "true", "yes"):
-                    logger.info("Printing Gitleaks report to log.")
-                    print(json.dumps(report, indent=2))
-                    pass
-                else:
-                    logger.info("Skipping PR comment posting and print in log.")
+                handle_report("Gitleaks", report, logger)
 
         elif scan_tool == "trufflehog":
             logger.info("Running TruffleHog scan...")
