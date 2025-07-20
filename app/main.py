@@ -57,7 +57,15 @@ def main():
                 logger.info("Gitleaks scan completed successfully.")
                 report = gitleaksScanne.report()
                 logger.info("Gitleaks report generated.")
-                print(json.dumps(report, indent=2))
+                if os.getenv("PR_COMMENT", "false").lower() in ("1", "true", "yes"):
+                    logger.info("Posting Gitleaks report to PR comment.")
+                    # Add logic to post report to PR comment
+                elif os.getenv("PRINT_REPORT", "false").lower() in ("1", "true", "yes"):
+                    logger.info("Printing Gitleaks report to log.")
+                    print(json.dumps(report, indent=2))
+                    pass
+                else:
+                    logger.info("Skipping PR comment posting and print in log.")
 
         elif scan_tool == "trufflehog":
             logger.info("Running TruffleHog scan...")
