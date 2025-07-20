@@ -51,9 +51,7 @@ def main():
         if scan_tool == "gitleaks":
             logger.info("Running Gitleaks scan...")
 
-            gitleaksScanne = GitleaksScanner(
-                config=get_env_variable("GITLEAKS_CONFIG", "gitleaks.toml")
-            )
+            gitleaksScanne = GitleaksScanner()
             gitleaksScanne.scan()
 
         elif scan_tool == "trufflehog":
