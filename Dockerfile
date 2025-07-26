@@ -13,6 +13,8 @@ RUN apk add --no-cache bash git openssh-client
 
 COPY . .
 
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY --from=gitleaks-build /app/gitleaks/bin/* /usr/bin/
 
 RUN git config --global --add safe.directory '*'

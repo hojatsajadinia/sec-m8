@@ -16,8 +16,8 @@ class GitleaksScanner:
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
-        print("STDOUT:\n", result.stdout)
-        print("STDERR:\n", result.stderr)
+        # print("STDOUT:\n", result.stdout)
+        # print("STDERR:\n", result.stderr)
 
         return result.returncode
 
