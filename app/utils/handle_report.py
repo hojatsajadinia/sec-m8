@@ -1,4 +1,3 @@
-import os
 import json
 from platforms.platform import Platform
 from utils.detect_ci import detect_ci
@@ -11,8 +10,8 @@ def handle_report(tool_name, report, logger):
 
     if get_env_variable("PR_COMMENT", "false").lower() in ("1", "true", "yes"):
         logger.info(f"Posting {tool_name} report to PR comment.")
-        platform = Platform(detect_ci())
-        platform.comment_on_merge_request()
+        platform = Platform(detect_ci(), logger)
+        platform.comment_on_merge_request(report)
 
     elif get_env_variable("PRINT_REPORT", "false").lower() in ("1", "true", "yes"):
         logger.info(f"Printing {tool_name} report to log.")
